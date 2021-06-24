@@ -167,12 +167,14 @@ uint32_t ForcedClimate::getPressure(const bool performMeasurement)
 float ForcedClimate::getPressure(const bool performMeasurement)
 #endif
 {
-    bus.beginTransmission(address);
     if(performMeasurement){
-        bus.write((uint8_t)registers::CTRL_MEAS);
-        bus.write(0b00100101);
-        delay(200);
+      bus.beginTransmission(address);
+      bus.write((uint8_t)registers::CTRL_MEAS);
+      bus.write(0b00100101);
+      bus.endTransmission();
+      delay(200);
     }
+    bus.beginTransmission(address);
     bus.write((uint8_t)registers::PRESS_MSB);
     bus.endTransmission();
     bus.requestFrom(address, (uint8_t)3);
