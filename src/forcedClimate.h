@@ -26,6 +26,7 @@ class ForcedClimate {
 		TwoWire & bus;	
 		#endif
 		uint8_t address;
+    uint8_t chipid;
 
 		int16_t temperature[4];
 		int16_t pressure[10];

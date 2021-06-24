@@ -56,6 +56,7 @@ ForcedClimate::ForcedClimate(TwoWire & bus, const uint8_t address, const bool au
 /// with the Arduino 1.5 Format; it's also called from the constructor (as it should be).
 void ForcedClimate::begin(){
     bus.begin();
+	delay(2);
     applyOversamplingControls();
     readCalibrationData();
 }
@@ -71,6 +72,7 @@ void ForcedClimate::takeForcedMeasurement(){
     bus.write((uint8_t)registers::CTRL_MEAS);
     bus.write(0b00100101);
     bus.endTransmission();
+    delay(100);
 }
 
 /// \brief
@@ -80,12 +82,20 @@ void ForcedClimate::takeForcedMeasurement(){
 /// suitable for all kinds of applications.
 void ForcedClimate::applyOversamplingControls(){
     bus.beginTransmission(address);
-    bus.write((uint8_t)registers::CTRL_HUM);
-    bus.write(0b00000001);
+    bus.write((uint8_t)0xD0);
+    bus.endTransmission();
+    bus.requestFrom(address, (uint8_t)1);
+    chipid=bus.read();
+    bus.beginTransmission(address);
+    if(chipid==0x60) {
+      bus.write((uint8_t)registers::CTRL_HUM);
+      bus.write(0b00000001);
+    }
     bus.write((uint8_t)registers::CTRL_MEAS);
     bus.write(0b00100101);                          // Last two bits are 01 for forced, 11 for normal and 00 for sleep mode
     bus.write((uint8_t)registers::FIRST_CALIB);
     bus.endTransmission();
+    delay(200);
 }
 
 /// \brief
@@ -127,7 +137,8 @@ float ForcedClimate::getTemperatureCelcius(const bool performMeasurement)
     bus.beginTransmission(address);
     if(performMeasurement){
         bus.write((uint8_t)registers::CTRL_MEAS);
-        bus.write(0b00100101);
+        bus.write(0b00100001);
+        delay(100);
     }
     bus.write((uint8_t)registers::TEMP_MSB);
     bus.endTransmission();
@@ -160,6 +171,7 @@ float ForcedClimate::getPressure(const bool performMeasurement)
     if(performMeasurement){
         bus.write((uint8_t)registers::CTRL_MEAS);
         bus.write(0b00100101);
+        delay(100);
     }
     bus.write((uint8_t)registers::PRESS_MSB);
     bus.endTransmission();
@@ -204,10 +216,13 @@ uint32_t ForcedClimate::getRelativeHumidity(const bool performMeasurement)
 float ForcedClimate::getRelativeHumidity(const bool performMeasurement)
 #endif
 {
+    if(chipid!=0x60)
+      return 0;
     bus.beginTransmission(address);
     if(performMeasurement){
         bus.write((uint8_t)registers::CTRL_MEAS);
         bus.write(0b00100101);
+        delay(100);
     }
     bus.write((uint8_t)registers::HUM_MSB);
     bus.endTransmission();
