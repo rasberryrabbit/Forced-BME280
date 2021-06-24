@@ -72,7 +72,7 @@ void ForcedClimate::takeForcedMeasurement(){
     bus.write((uint8_t)registers::CTRL_MEAS);
     bus.write(0b00100101);
     bus.endTransmission();
-    delay(100);
+    delay(200);
 }
 
 /// \brief
@@ -138,7 +138,7 @@ float ForcedClimate::getTemperatureCelcius(const bool performMeasurement)
     if(performMeasurement){
         bus.write((uint8_t)registers::CTRL_MEAS);
         bus.write(0b00100001);
-        delay(100);
+        delay(200);
     }
     bus.write((uint8_t)registers::TEMP_MSB);
     bus.endTransmission();
@@ -171,7 +171,7 @@ float ForcedClimate::getPressure(const bool performMeasurement)
     if(performMeasurement){
         bus.write((uint8_t)registers::CTRL_MEAS);
         bus.write(0b00100101);
-        delay(100);
+        delay(200);
     }
     bus.write((uint8_t)registers::PRESS_MSB);
     bus.endTransmission();
@@ -222,7 +222,7 @@ float ForcedClimate::getRelativeHumidity(const bool performMeasurement)
     if(performMeasurement){
         bus.write((uint8_t)registers::CTRL_MEAS);
         bus.write(0b00100101);
-        delay(100);
+        delay(200);
     }
     bus.write((uint8_t)registers::HUM_MSB);
     bus.endTransmission();
