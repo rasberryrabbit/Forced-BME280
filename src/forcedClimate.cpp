@@ -72,7 +72,7 @@ void ForcedClimate::takeForcedMeasurement(){
     bus.write((uint8_t)registers::CTRL_MEAS);
     bus.write(0b00100101);
     bus.endTransmission();
-    delay(200);
+    delay(80);
 }
 
 /// \brief
@@ -95,7 +95,7 @@ void ForcedClimate::applyOversamplingControls(){
     bus.write(0b00100101);                          // Last two bits are 01 for forced, 11 for normal and 00 for sleep mode
     bus.write((uint8_t)registers::FIRST_CALIB);
     bus.endTransmission();
-    delay(200);
+    delay(80);
 }
 
 /// \brief
@@ -138,7 +138,7 @@ float ForcedClimate::getTemperatureCelcius(const bool performMeasurement)
     if(performMeasurement){
         bus.write((uint8_t)registers::CTRL_MEAS);
         bus.write(0b00100001);
-        delay(200);
+        delay(80);
     }
     bus.write((uint8_t)registers::TEMP_MSB);
     bus.endTransmission();
@@ -172,7 +172,7 @@ float ForcedClimate::getPressure(const bool performMeasurement)
       bus.write((uint8_t)registers::CTRL_MEAS);
       bus.write(0b00100101);
       bus.endTransmission();
-      delay(200);
+      delay(80);
     }
     bus.beginTransmission(address);
     bus.write((uint8_t)registers::PRESS_MSB);
@@ -224,7 +224,7 @@ float ForcedClimate::getRelativeHumidity(const bool performMeasurement)
     if(performMeasurement){
         bus.write((uint8_t)registers::CTRL_MEAS);
         bus.write(0b00100101);
-        delay(200);
+        delay(80);
     }
     bus.write((uint8_t)registers::HUM_MSB);
     bus.endTransmission();
